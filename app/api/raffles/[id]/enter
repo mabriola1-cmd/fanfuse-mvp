@@ -1,0 +1,19 @@
+import { enterRaffle } from "@/lib/data";
+
+export async function POST(req, { params }) {
+  const body = await req.json();
+  const { creatorid, entries } = body; // ✅ lowercase 'i'
+
+  if (!creatorid || !entries) {
+    return new Response(JSON.stringify({ error: "Missing fields" }), {
+      status: 400,
+    });
+  }
+
+  const result = await enterRaffle(params.raffleid, creatorid, entries);
+
+  return new Response(JSON.stringify(result), {
+    status: 200,
+    headers: { "content-type": "application/json" },
+  });
+}
