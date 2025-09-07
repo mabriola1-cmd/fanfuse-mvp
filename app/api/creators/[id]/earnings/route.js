@@ -1,10 +1,12 @@
-import { getCreatorEarnings } from "../../../../../lib/data";
+import { kv } from "@vercel/kv";
 
-export async function GET(_req, { params }) {
-  const res = await getCreatorEarnings(params.id);
-  const status = res?.error ? 400 : 200;
-  return new Response(JSON.stringify(res), {
-    status,
-    headers: { "content-type": "application/json" }
+export async function GET(request, { params }) {
+  const { id } = params;
+
+  const earnings = await kv.get(`creator:${id}:earnings`);
+
+  return new Response(JSON.stringify({ earnings: earnings ?? 0 }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
   });
 }
